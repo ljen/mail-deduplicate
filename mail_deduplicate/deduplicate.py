@@ -160,7 +160,6 @@ class DuplicateSet:
 
         # Set metrics.
         self.stats: Counter = Counter()
-        self.stats["mail_duplicates"] += self.size
 
         logging.debug(f"{self!r} created.")
 
@@ -278,6 +277,21 @@ class DuplicateSet:
 
         The process results in two subsets of mails: the selected and the discarded.
         """
+        # Do not apply any strategy on single-mail sets.
+        # See: https://github.com/kdeldycke/mail-deduplicate/issues/843
+        if self.size == 1:
+            # The `select-one` strategy is the only one that can be applied to a single
+            # mail set.
+            if self.conf.strategy == "select-one":
+                self.stats["mail_unique"] += 1
+                self.stats["mail_selected"] += 1
+                self.stats["set_single"] += 1
+                self.selection = self.pool
+                self.discard = set()
+                return
+
+        self.stats["mail_duplicates"] += self.size
+
         # Fine-grained checks on mail differences.
         try:
             self.check_differences()

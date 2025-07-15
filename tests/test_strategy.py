@@ -350,7 +350,7 @@ test_cases = [
     ),
     (
         "one_selection",
-        [SELECT_ONE, DISCARD_ALL_BUT_ONE],
+        [DISCARD_ALL_BUT_ONE],
         [
             random_mail_1,
             random_mail_2,
@@ -364,6 +364,23 @@ test_cases = [
             random_mail_2,
             random_mail_2,
             random_mail_3,
+        ],
+    ),
+    (
+        "select_one_special_case",
+        [SELECT_ONE],
+        [
+            random_mail_1,
+            random_mail_2,
+            random_mail_2,
+            random_mail_1,
+            random_mail_3,
+            random_mail_2,
+        ],
+        [
+            random_mail_1,
+            random_mail_2,
+            random_mail_2,
         ],
     ),
     (
