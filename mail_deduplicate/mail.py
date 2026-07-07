@@ -30,6 +30,8 @@ from typing import cast
 from click_extra import get_current_context, render_table
 from whenever import Instant
 
+_WHITESPACE_RE = re.compile(r"\s")
+
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -275,7 +277,7 @@ class DedupMailMixin(Message):
     def hash_normalized_body(self) -> str:
         """Returns the normalized body hash of a mail."""
         serialized_normalized_body = "".join(
-            [re.sub(r"\s", "", line) for line in self.body_lines],
+            [_WHITESPACE_RE.sub("", line) for line in self.body_lines],
         ).encode("utf-8")
         hash_value = hashlib.sha224(serialized_normalized_body).hexdigest()
         logging.debug(f"Body normalized hash: {hash_value}")
