@@ -103,6 +103,9 @@ ADDRESS_HEADERS = frozenset((
 """
 
 
+SUBJECT_PREFIX_RE = re.compile(r"(?i)^(?:(?:re|fwd?): +|\[\w[\w_-]*\w?\] +)+")
+
+
 class DedupMailMixin(Message):
     """Message with deduplication-specific properties and utilities.
 
@@ -377,7 +380,7 @@ class DedupMailMixin(Message):
         mail could have been ``CC``'d to multiple lists, in which case it will receive a
         different prefix for each.
         """
-        return re.sub(r"(?i)^(?:(?:re|fwd?): +|\[\w[\w_-]*\w?\] +)+", "", subject)
+        return SUBJECT_PREFIX_RE.sub("", subject)
 
     def normalize_content_type(self, value: str) -> str:
         """Normalize ``Content-Type`` by stripping parameters.
