@@ -17,8 +17,10 @@
 from __future__ import annotations
 
 from string import ascii_lowercase
+from unittest.mock import MagicMock, patch
 
-from mail_deduplicate.action import Action
+from mail_deduplicate.action import Action, move_mails
+from mail_deduplicate.deduplicate import Stat
 
 
 def test_action_definitions():
@@ -33,3 +35,67 @@ def test_action_definitions():
         assert action_func is not None
         assert callable(action_func)
         assert action_func.__name__ == action.name.lower()
+
+
+def test_move_mails():
+    """Test move_mails action."""
+    dedup = MagicMock()
+    dedup.conf = {"export": "/path/to/export", "dry_run": False}
+    dedup.stats = {Stat.MAIL_MOVED: 0}
+
+    source_box = MagicMock()
+    dedup.sources = {"/path/to/source": source_box}
+
+    mail1 = MagicMock()
+    mail1.source_path = "/path/to/source"
+    mail1.mail_id = "id1"
+
+    mail2 = MagicMock()
+    mail2.source_path = "/path/to/source"
+    mail2.mail_id = "id2"
+
+    mails = [mail1, mail2]
+
+    with patch("mail_deduplicate.action.export_box") as mock_export_box:
+        box_mock = MagicMock()
+        mock_export_box.return_value.__enter__.return_value = box_mock
+
+        move_mails(dedup, mails)
+
+        assert dedup.stats[Stat.MAIL_MOVED] == 2
+        assert box_mock.add.call_count == 2
+        box_mock.add.assert_any_call(mail1)
+        box_mock.add.assert_any_call(mail2)
+
+        source_box.remove.assert_any_call("id1")
+        source_box.remove.assert_any_call("id2")
+
+
+def test_move_mails_dry_run():
+    """Test move_mails action in dry-run mode."""
+    dedup = MagicMock()
+    dedup.conf = {"export": "/path/to/export", "dry_run": True}
+    dedup.stats = {Stat.MAIL_MOVED: 0}
+
+    source_box = MagicMock()
+    dedup.sources = {"/path/to/source": source_box}
+
+    mail1 = MagicMock()
+    mail1.source_path = "/path/to/source"
+    mail1.mail_id = "id1"
+
+    mail2 = MagicMock()
+    mail2.source_path = "/path/to/source"
+    mail2.mail_id = "id2"
+
+    mails = [mail1, mail2]
+
+    with patch("mail_deduplicate.action.export_box") as mock_export_box:
+        box_mock = MagicMock()
+        mock_export_box.return_value.__enter__.return_value = box_mock
+
+        move_mails(dedup, mails)
+
+        assert dedup.stats[Stat.MAIL_MOVED] == 2
+        assert box_mock.add.call_count == 0
+        assert source_box.remove.call_count == 0
