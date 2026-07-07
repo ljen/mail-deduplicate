@@ -421,7 +421,7 @@ class DedupMailMixin(Message):
             ``"Robert \\"Bob\\"```` becomes ``Robert \\Bob\\``, but this shouldn't matter for
             hashing purposes as we're just trying to get a good heuristic. Refs: #847 and #846.
         """
-        value = re.sub(r'["]', "", value)
+        value = value.replace('"', "")
         value = " ".join(value.split())
         return self.strip_angle_brackets(value)
 
