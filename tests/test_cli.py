@@ -101,6 +101,16 @@ def test_cli_test_plan():
     assert result["failed"] == 0
 
 
+def test_compile_regexp_invalid():
+    """Ensure compile_regexp raises BadParameter for invalid regular expressions."""
+    import re
+    from click_extra import BadParameter
+    from mail_deduplicate.cli import compile_regexp
+
+    with pytest.raises(BadParameter, match=re.escape("invalid regular expression: '['.")):
+        compile_regexp(None, None, "[")
+
+
 def test_parallel_hashing_matches_sequential(invoke, make_box):
     """Hashing with --jobs > 1 must yield the same dedup result as the sequential
     default. Reading stays single-threaded and run_jobs preserves submission order,
