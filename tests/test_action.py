@@ -17,8 +17,10 @@
 from __future__ import annotations
 
 from string import ascii_lowercase
+from unittest.mock import MagicMock, Mock
 
-from mail_deduplicate.action import Action
+from mail_deduplicate.action import Action, delete_mails
+from mail_deduplicate.deduplicate import Stat
 
 
 def test_action_definitions():
@@ -33,3 +35,51 @@ def test_action_definitions():
         assert action_func is not None
         assert callable(action_func)
         assert action_func.__name__ == action.name.lower()
+
+
+def test_delete_mails_dry_run():
+    """Test delete_mails with dry_run=True."""
+    dedup = MagicMock()
+    dedup.stats = {Stat.MAIL_DELETED: 0}
+    dedup.conf = {"dry_run": True}
+
+    mail1 = Mock()
+    mail1.source_path = "path/to/source1"
+    mail1.mail_id = "id1"
+
+    mail2 = Mock()
+    mail2.source_path = "path/to/source2"
+    mail2.mail_id = "id2"
+
+    source_mock = MagicMock()
+    dedup.sources = {"path/to/source1": source_mock, "path/to/source2": source_mock}
+
+    delete_mails(dedup, [mail1, mail2])
+
+    assert dedup.stats[Stat.MAIL_DELETED] == 2
+    source_mock.remove.assert_not_called()
+
+
+def test_delete_mails():
+    """Test delete_mails with dry_run=False."""
+    dedup = MagicMock()
+    dedup.stats = {Stat.MAIL_DELETED: 0}
+    dedup.conf = {"dry_run": False}
+
+    mail1 = Mock()
+    mail1.source_path = "path/to/source1"
+    mail1.mail_id = "id1"
+
+    mail2 = Mock()
+    mail2.source_path = "path/to/source2"
+    mail2.mail_id = "id2"
+
+    source_mock1 = MagicMock()
+    source_mock2 = MagicMock()
+    dedup.sources = {"path/to/source1": source_mock1, "path/to/source2": source_mock2}
+
+    delete_mails(dedup, [mail1, mail2])
+
+    assert dedup.stats[Stat.MAIL_DELETED] == 2
+    source_mock1.remove.assert_called_once_with("id1")
+    source_mock2.remove.assert_called_once_with("id2")
