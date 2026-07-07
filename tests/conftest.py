@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import random
 import string
+from collections import Counter
 from email.utils import formatdate as maildate
 from functools import partial
 from mailbox import Mailbox, Maildir, Message, mbox
@@ -163,9 +164,7 @@ def check_box(box_path, box_type, content=None):
     # Compares the content of the box.
     box = box_type(box_path, create=False)
 
-    # TODO: use a Counter to count occurrences.
-
     assert len(box) == len(content)
-    mails_found = sorted([str(m) for m in box])
-    assert sorted([str(m.as_message()) for m in content]) == mails_found
+    mails_found = Counter(str(m) for m in box)
+    assert Counter(str(m.as_message()) for m in content) == mails_found
     box.close()
