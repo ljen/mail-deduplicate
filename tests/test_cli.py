@@ -21,7 +21,7 @@ from pathlib import Path
 
 import pytest
 from click_extra import BUILTIN_THEMES
-from click_extra.test_plan import parse_test_plan, run_test_plan
+from click_extra.test_suite import parse_test_suite, run_test_suite
 
 from .conftest import MailFactory
 
@@ -95,9 +95,9 @@ def test_cli_test_plan():
     exercises the real entry point (version reporting, help screen rendering).
     """
     plan = (Path(__file__).parent / "cli-test-plan.yaml").read_text(encoding="utf-8")
-    cases = list(parse_test_plan(plan))
+    cases = list(parse_test_suite(plan))
     assert cases, "Empty test plan: cli-test-plan.yaml parsed to zero cases."
-    result = run_test_plan("mdedup", cases)
+    result = run_test_suite("mdedup", cases)
     assert result["failed"] == 0
 
 

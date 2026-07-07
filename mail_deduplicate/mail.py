@@ -396,7 +396,7 @@ class DedupMailMixin(Message):
         mailing list you're both subscribed to - then it's still useful to be able to
         eliminate duplicates.
         """
-        return re.sub(";.*", "", value)
+        return value.split(";", 1)[0]
 
     def normalize_date(self, value: str) -> str:
         """Normalize ``Date`` to ``YYYY-MM-DD`` format.
