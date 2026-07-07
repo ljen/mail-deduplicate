@@ -19,9 +19,10 @@ from __future__ import annotations
 import inspect
 import mailbox
 from functools import cache
-from mailbox import Mailbox, Message
+from mailbox import Mailbox, Message, ExternalClashError
 
 import pytest
+from unittest.mock import MagicMock
 
 from mail_deduplicate.mail import DedupMailMixin
 from mail_deduplicate.mail_box import (
@@ -29,6 +30,7 @@ from mail_deduplicate.mail_box import (
     FOLDER_FORMATS,
     BoxFormat,
     BoxStructure,
+    lock_box,
 )
 
 from .conftest import MailFactory, check_box
@@ -190,3 +192,26 @@ def test_invalid_maildir_structure(invoke):
     assert "Step #1" in result.stdout
     assert "Opening " in result.stderr
     assert "Missing sub-directory" in str(result.exc_info[1])
+
+
+
+
+def test_lock_box_external_clash_no_force():
+    box = MagicMock(spec=Mailbox)
+    box.lock.side_effect = ExternalClashError()
+
+    with pytest.raises(ExternalClashError):
+        lock_box(box, force_unlock=False)
+
+    assert box.lock.call_count == 1
+    box.unlock.assert_not_called()
+
+def test_lock_box_external_clash_force_unlock():
+    box = MagicMock(spec=Mailbox)
+    box.lock.side_effect = [ExternalClashError(), None]
+
+    result = lock_box(box, force_unlock=True)
+
+    assert result == box
+    assert box.lock.call_count == 2
+    box.unlock.assert_called_once()
