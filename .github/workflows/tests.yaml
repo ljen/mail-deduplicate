@@ -94,6 +94,7 @@ jobs:
           PYTHON_VERSION: ${{ matrix.python-version }}
         run: |
           set -e
+          uv python install "${UV_PYTHON:-${PYTHON_VERSION}}" || true
           uv --no-progress venv --python "${UV_PYTHON:-${PYTHON_VERSION}}"
       - name: Force UTF-8 encoding on Windows
         # Workaround for https://github.com/pallets/click/issues/2121: Windows GitHub Actions runners
