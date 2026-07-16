@@ -68,6 +68,13 @@ jobs:
             python-version: "3.15"
           - state: unstable
             python-version: "3.15t"
+          # Python 3.10 has no native ARM64 build for Windows. Test 3.11 instead.
+          - os: windows-11-arm
+            python-version: "3.11"
+            state: stable
+        exclude:
+          - os: windows-11-arm
+            python-version: "3.10"
     name: "${{ matrix.state == 'stable' && '✅' || '⁉️' }} ${{ matrix.os }} / py${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
     # We keep going when a job flagged as not stable fails.
