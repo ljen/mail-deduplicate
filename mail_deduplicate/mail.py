@@ -336,7 +336,7 @@ class DedupMailMixin(Message):
             logging.debug(msg)
 
         return "\n".join(
-            [f"{h_id}: {h_value}" for h_id, h_value in self.canonical_headers],
+            f"{h_id}: {h_value}" for h_id, h_value in self.canonical_headers
         ).encode("utf-8")
 
     def normalized_header_values(self, header_id: str) -> Iterator[str]:
