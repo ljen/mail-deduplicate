@@ -1,0 +1,12 @@
+--- tests.yaml
++++ tests.yaml
+@@ -74,7 +74,7 @@
+         # fails the job. It works because Windows runners too Git Bash available).
+         shell: bash
+         env:
+-          PYTHON_VERSION: ${{ matrix.python-version }}
++          PYTHON_VERSION: ${{ matrix.python-version }}
+         run: |
+           set -e
+-          uv --no-progress venv --python "${UV_PYTHON:-${PYTHON_VERSION}}"
++          python -m uv --no-progress venv --python "${UV_PYTHON:-${PYTHON_VERSION}}"

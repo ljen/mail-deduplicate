@@ -1,0 +1,11 @@
+--- .github/workflows/tests.yaml
++++ .github/workflows/tests.yaml
+@@ -94,7 +94,7 @@
+         # fails the job. It works because Windows runners too Git Bash available).
+         shell: bash
+         env:
+-          PYTHON_VERSION: ${{ matrix.python-version == '3.14t' && '3.14' || matrix.python-version == '3.15t' && '3.15' || matrix.python-version }}
++          PYTHON_VERSION: ${{ matrix.python-version }}
+         run: |
+           set -e
+           uv --no-progress venv --python "${UV_PYTHON:-${PYTHON_VERSION}}"
