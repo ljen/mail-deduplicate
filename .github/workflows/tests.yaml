@@ -80,7 +80,8 @@ jobs:
         # relying on transparent emulation. Native extensions with Rust (e.g., test-results-parser from codecov-cli)
         # fail to compile because the ARM64 Rust toolchain lacks the x86_64-pc-windows-msvc target. Setting UV_PYTHON
         # to an architecture-qualified specifier forces uv (and uvx) to use native ARM64 Python for all steps.
-        if: runner.os == 'Windows' && runner.arch == 'ARM64'
+        # Note: Native ARM64 Windows binaries are only available for Python 3.11+.
+        if: runner.os == 'Windows' && runner.arch == 'ARM64' && matrix.python-version != '3.10'
         shell: bash
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
