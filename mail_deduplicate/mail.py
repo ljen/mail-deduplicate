@@ -271,11 +271,13 @@ class DedupMailMixin(Message):
         logging.debug(f"Body raw hash: {hash_value}")
         return hash_value
 
+    _WHITESPACE_RE = re.compile(r"\s")
+
     @cached_property
     def hash_normalized_body(self) -> str:
         """Returns the normalized body hash of a mail."""
         serialized_normalized_body = "".join(
-            [re.sub(r"\s", "", line) for line in self.body_lines],
+            [self._WHITESPACE_RE.sub("", line) for line in self.body_lines],
         ).encode("utf-8")
         hash_value = hashlib.sha224(serialized_normalized_body).hexdigest()
         logging.debug(f"Body normalized hash: {hash_value}")
