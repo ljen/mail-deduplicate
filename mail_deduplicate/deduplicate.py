@@ -23,7 +23,7 @@ from collections import Counter
 from difflib import unified_diff
 from enum import Enum
 from functools import cached_property
-from itertools import combinations
+from itertools import chain, combinations
 from operator import attrgetter
 from pathlib import Path
 from typing import NamedTuple
@@ -572,7 +572,7 @@ class Deduplicate:
 
             # Remove from mail objects all attributes we no longer need.
             # See: https://github.com/kdeldycke/mail-deduplicate/issues/362
-            for mail in duplicates.discard | duplicates.selection:
+            for mail in chain(duplicates.discard, duplicates.selection):
                 self.cleanup_mail_attrs(mail, self.CLEANUP_ATTRS)
             if self.conf["action"] == "move-discarded":
                 for mail in duplicates.selection:
