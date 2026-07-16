@@ -17,8 +17,10 @@
 from __future__ import annotations
 
 from string import ascii_lowercase
+from unittest.mock import MagicMock, patch
 
-from mail_deduplicate.action import Action
+from mail_deduplicate.action import Action, copy_mails
+from mail_deduplicate.deduplicate import Stat
 
 
 def test_action_definitions():
@@ -33,3 +35,45 @@ def test_action_definitions():
         assert action_func is not None
         assert callable(action_func)
         assert action_func.__name__ == action.name.lower()
+
+
+def test_copy_mails():
+    """Test copy_mails action behavior."""
+    dedup = MagicMock()
+    dedup.conf = {"export": "mock_export", "dry_run": False}
+    dedup.stats = {Stat.MAIL_COPIED: 0}
+
+    mail1 = MagicMock()
+    mail2 = MagicMock()
+    mails = [mail1, mail2]
+
+    with patch("mail_deduplicate.action.export_box") as mock_export_box:
+        mock_box = MagicMock()
+        mock_export_box.return_value.__enter__.return_value = mock_box
+
+        copy_mails(dedup, mails)
+
+        assert mock_box.add.call_count == 2
+        mock_box.add.assert_any_call(mail1)
+        mock_box.add.assert_any_call(mail2)
+        assert dedup.stats[Stat.MAIL_COPIED] == 2
+
+
+def test_copy_mails_dry_run():
+    """Test copy_mails action behavior during a dry run."""
+    dedup = MagicMock()
+    dedup.conf = {"export": "mock_export", "dry_run": True}
+    dedup.stats = {Stat.MAIL_COPIED: 0}
+
+    mail1 = MagicMock()
+    mails = [mail1]
+
+    with patch("mail_deduplicate.action.export_box") as mock_export_box:
+        mock_box = MagicMock()
+        mock_export_box.return_value.__enter__.return_value = mock_box
+
+        copy_mails(dedup, mails)
+
+        # In dry run, box.add shouldn't be called
+        mock_box.add.assert_not_called()
+        assert dedup.stats[Stat.MAIL_COPIED] == 1
