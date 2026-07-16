@@ -185,8 +185,6 @@ class MdedupCommand(Command):
     context_settings={
         # Removes the -h short option as we reserve it for --hash-header.
         "help_option_names": ("--help",),
-        # XXX Default verbosity has been changed in Click Extra v4.0.0 from INFO
-        # to WARNING.
         "default_map": {"verbosity": "INFO"},
     },
 )
