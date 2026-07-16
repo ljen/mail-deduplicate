@@ -151,10 +151,11 @@ def select_matching_path(duplicates: DuplicateSet) -> set[DedupMailMixin]:
     """Select all duplicates whose file path match the regular expression provided via
     the --regexp parameter."""
     assert duplicates.conf["regexp"] is not None
+    pattern = re.compile(duplicates.conf["regexp"])
     return {
         mail
         for mail in duplicates.pool
-        if re.search(duplicates.conf["regexp"], mail.path)
+        if pattern.search(mail.path)
     }
 
 
@@ -165,10 +166,11 @@ def select_non_matching_path(duplicates: DuplicateSet) -> set[DedupMailMixin]:
     """Select all duplicates whose file path doesn't match the regular expression
     provided via the --regexp parameter."""
     assert duplicates.conf["regexp"] is not None
+    pattern = re.compile(duplicates.conf["regexp"])
     return {
         mail
         for mail in duplicates.pool
-        if not re.search(duplicates.conf["regexp"], mail.path)
+        if not pattern.search(mail.path)
     }
 
 
