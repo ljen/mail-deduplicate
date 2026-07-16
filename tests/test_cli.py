@@ -101,6 +101,15 @@ def test_cli_test_plan():
     assert result["failed"] == 0
 
 
+def test_invalid_regexp_parameter(invoke, make_box):
+    """Test that an invalid regular expression provided to --regexp parameter is caught properly."""
+    box_path, _, _ = make_box(Maildir)
+    result = invoke("--regexp", "([a-z", box_path)
+
+    assert result.exit_code == 2
+    assert "invalid regular expression" in result.stderr
+
+
 def test_parallel_hashing_matches_sequential(invoke, make_box):
     """Hashing with --jobs > 1 must yield the same dedup result as the sequential
     default. Reading stays single-threaded and run_jobs preserves submission order,

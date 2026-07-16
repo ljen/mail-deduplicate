@@ -141,7 +141,7 @@ def compile_regexp(
     if value:
         try:
             return re.compile(value)
-        except ValueError:
+        except re.error:
             raise BadParameter(f"invalid regular expression: {value!r}.")
     return None
 
