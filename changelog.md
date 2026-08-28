@@ -12,6 +12,31 @@
 - Move `test`, `typing` and `docs` extras to dependency groups.
 - Replace the `arrow` date library with [`whenever`](https://github.com/ariebovenberg/whenever).
 
+## [`9.3.1` (2026-08-28)](https://github.com/kdeldycke/mail-deduplicate/compare/v9.3.0...v9.3.1)
+
+> [!NOTE]
+> `9.3.1` is available on [🐍 PyPI](https://pypi.org/project/mail-deduplicate/9.3.1/) and [🐙 GitHub](https://github.com/kdeldycke/mail-deduplicate/releases/tag/v9.3.1).
+
+## [`9.3.0` (2026-08-08)](https://github.com/kdeldycke/mail-deduplicate/compare/v9.2.0...v9.3.0)
+
+> [!NOTE]
+> `9.3.0` is available on [🐍 PyPI](https://pypi.org/project/mail-deduplicate/9.3.0/) and [🐙 GitHub](https://github.com/kdeldycke/mail-deduplicate/releases/tag/v9.3.0).
+
+## [`9.2.0` (2026-08-07)](https://github.com/kdeldycke/mail-deduplicate/compare/v9.1.0...v9.2.0)
+
+> [!NOTE]
+> `9.2.0` is available on [🐍 PyPI](https://pypi.org/project/mail-deduplicate/9.2.0/) and [🐙 GitHub](https://github.com/kdeldycke/mail-deduplicate/releases/tag/v9.2.0).
+
+## [`9.1.0` (2026-08-01)](https://github.com/kdeldycke/mail-deduplicate/compare/v9.0.0...v9.1.0)
+
+> [!NOTE]
+> `9.1.0` is available on [🐍 PyPI](https://pypi.org/project/mail-deduplicate/9.1.0/) and [🐙 GitHub](https://github.com/kdeldycke/mail-deduplicate/releases/tag/v9.1.0).
+
+## [`9.0.0` (2026-07-27)](https://github.com/kdeldycke/mail-deduplicate/compare/v9.0.0.dev0...v9.0.0)
+
+> [!NOTE]
+> `9.0.0` is available on [🐍 PyPI](https://pypi.org/project/mail-deduplicate/9.0.0/) and [🐙 GitHub](https://github.com/kdeldycke/mail-deduplicate/releases/tag/v9.0.0).
+
 ## [`8.1.2` (2025-12-02)](https://github.com/kdeldycke/mail-deduplicate/compare/v8.1.1...v8.1.2)
 
 > [!NOTE]
